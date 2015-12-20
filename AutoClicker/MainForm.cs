@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoClicker
@@ -9,6 +10,8 @@ namespace AutoClicker
         private Keys hotkey;
         private Win32.fsModifiers modifiers;
         private bool hotkeySet;
+
+        private Thread countdownThread;
 
         public MainForm()
         {
@@ -22,6 +25,22 @@ namespace AutoClicker
             LocationHandler(null, null);
             DelayHandler(null, null);
             CountHandler(null, null);
+
+            clicker.NextClick += HandleNextClick;
+        }
+
+        private void HandleNextClick(object sender, AutoClicker.NextClickEventArgs e)
+        {
+            countdownThread = new Thread(() => CountDown(e.NextClick));
+            countdownThread.Start();
+        }
+
+        private void CountDown(int Milliseconds)
+        {
+            for (int i = 0; i < Milliseconds; i++)
+            {
+                tslStatus.Text = string.Format("Next click: {0}ms", Milliseconds - i);
+            }
         }
 
         private void ClickTypeHandler(object sender, EventArgs e)
@@ -195,6 +214,8 @@ namespace AutoClicker
             else
             {
                 clicker.Stop();
+                countdownThread.Abort();
+                tslStatus.Text = "Not currently doing much helpful here to be honest";
                 grpClickType.Enabled = true;
                 grpLocation.Enabled = true;
                 grpDelay.Enabled = true;

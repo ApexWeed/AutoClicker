@@ -89,6 +89,13 @@ namespace AutoClicker
             rnd = new Random();
         }
 
+        public class NextClickEventArgs : EventArgs
+        {
+            public int NextClick;
+        }
+
+        public event EventHandler<NextClickEventArgs> NextClick;
+
         private void Click()
         {
             //System.Diagnostics.Debug.Print("Click() started");
@@ -232,14 +239,18 @@ namespace AutoClicker
                 //System.Diagnostics.Debug.Print("Command sent");
 
                 // ちょっと寝る
+                int nextDelay = 0;
                 if (delayType == DelayType.Fixed)
                 {
-                    Thread.Sleep(delay);
+                    nextDelay = delay;
+                    
                 }
                 else
                 {
-                    Thread.Sleep(rnd.Next(delay, delayRange));
+                    nextDelay = rnd.Next(delay, delayRange);
                 }
+                NextClick?.Invoke(this, new NextClickEventArgs { NextClick = nextDelay });
+                Thread.Sleep(nextDelay);
                 //System.Diagnostics.Debug.Print("Had a nap");
                 remaining--;
             }
