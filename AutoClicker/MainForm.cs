@@ -37,9 +37,10 @@ namespace AutoClicker
 
         private void CountDown(int Milliseconds)
         {
-            for (int i = 0; i < Milliseconds; i++)
+            for (int i = 0; i < Milliseconds; i += 10)
             {
                 tslStatus.Text = string.Format("Next click: {0}ms", Milliseconds - i);
+                Thread.Sleep(9);
             }
         }
 
