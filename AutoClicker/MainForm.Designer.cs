@@ -74,6 +74,7 @@
             this.rdbLocationMouse = new System.Windows.Forms.RadioButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tslStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnSelect = new System.Windows.Forms.Button();
             this.grpMain.SuspendLayout();
             this.grpClickType.SuspendLayout();
             this.grpControls.SuspendLayout();
@@ -429,6 +430,7 @@
             // 
             // grpLocation
             // 
+            this.grpLocation.Controls.Add(this.btnSelect);
             this.grpLocation.Controls.Add(this.label6);
             this.grpLocation.Controls.Add(this.numRandomHeight);
             this.grpLocation.Controls.Add(this.label7);
@@ -656,6 +658,16 @@
             this.tslStatus.Size = new System.Drawing.Size(279, 17);
             this.tslStatus.Text = "Not currently doing much helpful here to be honest";
             // 
+            // btnSelect
+            // 
+            this.btnSelect.Location = new System.Drawing.Point(102, 106);
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(75, 23);
+            this.btnSelect.TabIndex = 16;
+            this.btnSelect.Text = "Select...";
+            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -744,6 +756,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tslStatus;
         private System.Windows.Forms.Button btnToggle;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button btnSelect;
     }
 }
 

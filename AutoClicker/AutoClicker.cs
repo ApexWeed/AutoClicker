@@ -146,7 +146,7 @@ namespace AutoClicker
                         mi = new Win32.MOUSEINPUT
                         {
                             dx = Win32.CalculateAbsoluteCoordinateX(rnd.Next(x, x + width)),
-                            dy = Win32.CalculateAbsoluteCoordinateX(rnd.Next(y, y + height)),
+                            dy = Win32.CalculateAbsoluteCoordinateY(rnd.Next(y, y + height)),
                             dwFlags = Win32.MouseEventFlags.Move | Win32.MouseEventFlags.Absolute
                         }
                     };

@@ -9,7 +9,7 @@ namespace AutoClicker
     {
         private AutoClicker clicker;
         private Keys hotkey;
-        private Win32.fsModifiers modifiers;
+        private Win32.fsModifiers hotkeyNodifiers;
 
         private Thread countdownThread;
 
@@ -209,18 +209,18 @@ namespace AutoClicker
                         if (hotkey != Keys.None)
                         {
                             var hotkeyModifiers = hotkey & Keys.Modifiers;
-                            modifiers = 0;
+                            hotkeyNodifiers = 0;
                             if ((hotkeyModifiers & Keys.Shift) != 0)
                             {
-                                modifiers |= Win32.fsModifiers.Shift;
+                                hotkeyNodifiers |= Win32.fsModifiers.Shift;
                             }
                             if ((hotkeyModifiers & Keys.Control) != 0)
                             {
-                                modifiers |= Win32.fsModifiers.Control;
+                                hotkeyNodifiers |= Win32.fsModifiers.Control;
                             }
                             if ((hotkeyModifiers & Keys.Alt) != 0)
                             {
-                                modifiers |= Win32.fsModifiers.Alt;
+                                hotkeyNodifiers |= Win32.fsModifiers.Alt;
                             }
 
                             SetHotkey();
@@ -332,6 +332,7 @@ namespace AutoClicker
                 numRandomY.Enabled = true;
                 numRandomWidth.Enabled = true;
                 numRandomHeight.Enabled = true;
+                btnSelect.Enabled = true;
             }
             else
             {
@@ -339,6 +340,7 @@ namespace AutoClicker
                 numRandomY.Enabled = false;
                 numRandomWidth.Enabled = false;
                 numRandomHeight.Enabled = false;
+                btnSelect.Enabled = false;
             }
 
             clicker.UpdateLocation(locationType, x, y, width, height);
@@ -448,8 +450,9 @@ namespace AutoClicker
                     return;
                 }
 
+                Win32.fsModifiers modifiers = (Win32.fsModifiers)((int)m.LParam & 0xFFFF);
                 Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
-                if (key == Keys.F2)
+                if (key == (hotkey & Keys.KeyCode) && modifiers == hotkeyNodifiers)
                 {
                     btnToggle_Click(null, null);
                 }
@@ -466,18 +469,18 @@ namespace AutoClicker
                 Win32.UnregisterHotKey(this.Handle, (int)hotkey);
                 hotkey = e.KeyData;
                 // Extract modifiers
-                modifiers = 0;
+                hotkeyNodifiers = 0;
                 if ((e.Modifiers & Keys.Shift) != 0)
                 {
-                    modifiers |= Win32.fsModifiers.Shift;
+                    hotkeyNodifiers |= Win32.fsModifiers.Shift;
                 }
                 if ((e.Modifiers & Keys.Control) != 0)
                 {
-                    modifiers |= Win32.fsModifiers.Control;
+                    hotkeyNodifiers |= Win32.fsModifiers.Control;
                 }
                 if ((e.Modifiers & Keys.Alt) != 0)
                 {
-                    modifiers |= Win32.fsModifiers.Alt;
+                    hotkeyNodifiers |= Win32.fsModifiers.Alt;
                 }
 
                 SetHotkey();
@@ -487,7 +490,7 @@ namespace AutoClicker
         private void SetHotkey()
         {
             txtHotkey.Text = KeysConverter.Convert(hotkey);
-            Win32.RegisterHotKey(this.Handle, (int)hotkey, (uint)modifiers, (uint)(hotkey & Keys.KeyCode));
+            Win32.RegisterHotKey(this.Handle, (int)hotkey, (uint)hotkeyNodifiers, (uint)(hotkey & Keys.KeyCode));
             btnHotkeyRemove.Enabled = true;
         }
 
@@ -500,6 +503,20 @@ namespace AutoClicker
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
+        }
+
+        public void SendRectangle(int X, int Y, int Width, int Height)
+        {
+            numRandomX.Value = X;
+            numRandomY.Value = Y;
+            numRandomWidth.Value = Width;
+            numRandomHeight.Value = Height;
+        }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            var form = new SelectionForm(this);
+            form.Show();
         }
     }
 }
