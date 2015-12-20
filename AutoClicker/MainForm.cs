@@ -71,7 +71,7 @@ namespace AutoClicker
                     w.Write((int)numFixedX.Value);
                     w.Write((int)numFixedY.Value);
                     w.Write((int)numRandomX.Value);
-                    w.Write((int)numRandomX.Value);
+                    w.Write((int)numRandomY.Value);
                     w.Write((int)numRandomWidth.Value);
                     w.Write((int)numRandomHeight.Value);
 
@@ -240,12 +240,18 @@ namespace AutoClicker
             CountHandler(null, null);
 
             clicker.NextClick += HandleNextClick;
+            clicker.Finished += HandleFinished;
         }
 
         private void HandleNextClick(object sender, AutoClicker.NextClickEventArgs e)
         {
             countdownThread = new Thread(() => CountDown(e.NextClick));
             countdownThread.Start();
+        }
+
+        private void HandleFinished(object sender, EventArgs e)
+        {
+            EnableControls();
         }
 
         private void CountDown(int Milliseconds)
@@ -418,24 +424,72 @@ namespace AutoClicker
         {
             if (!clicker.IsAlive)
             {
-                grpClickType.Enabled = false;
-                grpLocation.Enabled = false;
-                grpDelay.Enabled = false;
-                grpCount.Enabled = false;
                 clicker.Start();
-                btnToggle.Text = "Stop";
+                DisableControls();
             }
             else
             {
                 clicker.Stop();
                 countdownThread.Abort();
-                tslStatus.Text = "Not currently doing much helpful here to be honest";
-                grpClickType.Enabled = true;
-                grpLocation.Enabled = true;
-                grpDelay.Enabled = true;
-                grpCount.Enabled = true;
-                btnToggle.Text = "Start";
+                EnableControls();
             }
+        }
+
+        delegate void SetEnabledCallback(Control Control, bool Enabled);
+        private void SetEnabled(Control Control, bool Enabled)
+        {
+            if (Control.InvokeRequired)
+            {
+                var d = new SetEnabledCallback(SetEnabled);
+                this.Invoke(d, new object[] { Control, Enabled });
+            }
+            else
+            {
+                Control.Enabled = Enabled;
+            }
+        }
+
+        delegate void SetButtonTextCallback(Button Control, string Text);
+        private void SetButtonText(Button Control, string Text)
+        {
+            if (Control.InvokeRequired)
+            {
+                var d = new SetButtonTextCallback(SetButtonText);
+                this.Invoke(d, new object[] { Control, Text });
+            }
+            else
+            {
+                Control.Text = Text;
+            }
+        }
+
+        private void EnableControls()
+        {
+            tslStatus.Text = "Not currently doing much helpful here to be honest";
+            SetEnabled(grpClickType, true);
+            SetEnabled(grpLocation, true);
+            SetEnabled(grpDelay, true);
+            SetEnabled(grpCount, true);
+            SetButtonText(btnToggle, "Start");
+            //grpClickType.Enabled = true;
+            //grpLocation.Enabled = true;
+            //grpDelay.Enabled = true;
+            //grpCount.Enabled = true;
+            //btnToggle.Text = "Start";
+        }
+
+        private void DisableControls()
+        {
+            SetEnabled(grpClickType, false);
+            SetEnabled(grpLocation, false);
+            SetEnabled(grpDelay, false);
+            SetEnabled(grpCount, false);
+            SetButtonText(btnToggle, "Stop");
+            //grpClickType.Enabled = false;
+            //grpLocation.Enabled = false;
+            //grpDelay.Enabled = false;
+            //grpCount.Enabled = false;
+            //btnToggle.Text = "Stop";
         }
 
         protected override void WndProc(ref Message m)

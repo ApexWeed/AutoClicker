@@ -96,6 +96,8 @@ namespace AutoClicker
 
         public event EventHandler<NextClickEventArgs> NextClick;
 
+        public EventHandler<EventArgs> Finished;
+
         private void Click()
         {
             //System.Diagnostics.Debug.Print("Click() started");
@@ -254,6 +256,7 @@ namespace AutoClicker
                 //System.Diagnostics.Debug.Print("Had a nap");
                 remaining--;
             }
+            Finished?.Invoke(this, null);
         }
 
         public bool IsAlive
