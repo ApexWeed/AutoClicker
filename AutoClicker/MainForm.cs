@@ -441,7 +441,7 @@ namespace AutoClicker
             if (Control.InvokeRequired)
             {
                 var d = new SetEnabledCallback(SetEnabled);
-                this.Invoke(d, new object[] { Control, Enabled });
+                this.Invoke(d, Control, Enabled);
             }
             else
             {
@@ -455,7 +455,7 @@ namespace AutoClicker
             if (Control.InvokeRequired)
             {
                 var d = new SetButtonTextCallback(SetButtonText);
-                this.Invoke(d, new object[] { Control, Text });
+                this.Invoke(d, Control, Text);
             }
             else
             {
