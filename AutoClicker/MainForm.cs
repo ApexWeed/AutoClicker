@@ -245,8 +245,19 @@ namespace AutoClicker
 
         private void HandleNextClick(object sender, AutoClicker.NextClickEventArgs e)
         {
-            countdownThread = new Thread(() => CountDown(e.NextClick));
-            countdownThread.Start();
+            if (countdownThread == null)
+            {
+                countdownThread = new Thread(() => CountDown(e.NextClick));
+                countdownThread.Start();
+            }
+            else
+            {
+                countdownThread.Abort();
+                countdownThread = new Thread(() => CountDown(e.NextClick));
+                countdownThread.Start();
+            }
+
+            
         }
 
         private void HandleFinished(object sender, EventArgs e)
