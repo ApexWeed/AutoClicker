@@ -251,12 +251,12 @@ namespace AutoClicker
                 {
                     nextDelay = rnd.Next(delay, delayRange);
                 }
-                NextClick?.Invoke(this, new NextClickEventArgs { NextClick = nextDelay });
+                NextClick.Invoke(this, new NextClickEventArgs { NextClick = nextDelay });
                 Thread.Sleep(nextDelay);
                 //System.Diagnostics.Debug.Print("Had a nap");
                 remaining--;
             }
-            Finished?.Invoke(this, null);
+            Finished.Invoke(this, null);
         }
 
         public bool IsAlive
